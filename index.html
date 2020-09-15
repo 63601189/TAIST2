@@ -2,6 +2,9 @@
 <html>
 
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
     <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
     <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
@@ -57,28 +60,48 @@
         let motionY = [];
         let motionZ = [];        
         let motionXAvg = [];
-        let motionXMax = [];
         let motionYAvg = [];
-        let motionYMax = [];
         let motionZAvg = [];
+        let motionXStdev = [];
+        let motionYStdev = [];
+        let motionZStdev = [];        
+        let motionXMin = [];
+        let motionYMin = [];
+        let motionZMin = [];        
+        let motionXMax = [];
+        let motionYMax = [];
         let motionZMax = [];
         const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
+        const arrStdev = arr => {
+            const avg = arrAvg(arr);
+            let total = 0;
+            for (let i = 0; i < arr.length; i++) {
+                total += Math.pow((arr[i] - avg),2);
+            }
+            return Math.sqrt(total/arr.length);            
+        };
+        const arrMin = arr => {return Math.min(...arr)};
         const arrMax = arr => {return Math.max(...arr)};
 
-
         function submitFirebase(t) {
-            const projName = document.getElementById('geodeo636').value;
-            const pathName = document.getElementById('logs').value;
+            const projName = document.getElementById('project-name').value;
+            const pathName = document.getElementById('path-name').value;
             let Url = 'https://' + projName + '.firebaseio.com/' + pathName + '.json';            
             let Data = {
                 timestamp: t,
                 latitude: posLatitude,
                 longitude: posLongitude,
                 motionXAvg: motionXAvg,
-                motionXMax: motionXMax,
-                motionYAvg: motionZAvg,
-                motionYMax: motionZMax,
+                motionYAvg: motionYAvg,
                 motionZAvg: motionZAvg,
+                motionXStdev: motionXStdev,
+                motionYStdev: motionYStdev,
+                motionZStdev: motionZStdev,
+                motionXMin: motionXMin,
+                motionYMin: motionYMin,   
+                motionZMin: motionZMin,                
+                motionXMax: motionXMax,
+                motionYMax: motionYMax,   
                 motionZMax: motionZMax                
             };
             const Params = {
@@ -123,6 +146,12 @@
                         motionXAvg.push(arrAvg(motionX));
                         motionYAvg.push(arrAvg(motionY));
                         motionZAvg.push(arrAvg(motionZ));
+                        motionXStdev.push(arrStdev(motionX));
+                        motionYStdev.push(arrStdev(motionY));
+                        motionZStdev.push(arrStdev(motionZ));                        
+                        motionXMin.push(arrMin(motionX));
+                        motionYMin.push(arrMin(motionY));
+                        motionZMin.push(arrMin(motionZ));                        
                         motionXMax.push(arrMax(motionX));
                         motionYMax.push(arrMax(motionY));
                         motionZMax.push(arrMax(motionZ)); 
@@ -143,6 +172,12 @@
                         motionXAvg = [];
                         motionYAvg = [];
                         motionZAvg = [];
+                        motionXStdev = [];
+                        motionYStdev = [];
+                        motionZStdev = [];
+                        motionXMin = [];
+                        motionYMin = [];
+                        motionZMin = [];                                                
                         motionXMax = [];
                         motionYMax = [];
                         motionZMax = [];
